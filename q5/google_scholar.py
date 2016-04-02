@@ -28,12 +28,11 @@ for line in f:
 		f1 = open(tempfile_path + "related20pubs.csv","r")
 		entry = {'name':line,'children':[]}
 		for pub in f1:
-			subentry = {"title":"","url":"","year":""}
+			
 			pub = pub.split("|")
-			subentry["title"] = pub[0]
-			subentry["url"] = pub[1]
-			subentry["year"] = pub[2]
-			entry['children'].append(subentry)
+			pubchild = {"name":pub[0],"children":[{"name":"URL","children":[{"name":pub[1],"size":2000}]} , {"name":"Year","children":[{"name":pub[2],"size":2000}]}]}
+			
+			entry['children'].append(pubchild)
 
 		related_pubs['children'].append(entry)
 	#break
