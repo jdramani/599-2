@@ -1,0 +1,17 @@
+import subprocess
+import codecs
+import time
+import json
+
+mp4_file_path = "/media/jaydeep/mySpace/spring2016/599/polarmp4/"
+tempfile_path = "/home/jaydeep/"
+
+for f in os.listdir(mp4_file_path):
+	try:
+		command = "./exiftool " + f
+		result = subprocess.check_output(command, shell=True)
+		f1 = codecs.open(tempfile_path + "extractmp4temp", "w","utf-8")
+		f1.write(result)
+		f1.close()
+	except:
+		continue

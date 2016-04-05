@@ -26,21 +26,18 @@ for line in f:
 		f1.write(result)
 		f1.close()
 		f1 = open(tempfile_path + "related20pubs.csv","r")
-		entry = {'name':line,'children':[]}
+		
 		for pub in f1:
 			
 			pub = pub.split("|")
-			pubchild = {"name":pub[0],"children":[{"name":"URL","children":[{"name":pub[1],"size":2000}]} , {"name":"Year","children":[{"name":pub[2],"size":2000}]}]}
-			
-			entry['children'].append(pubchild)
-
-		related_pubs['children'].append(entry)
+			thispub = {"name":pub[0],"author":line,"URL":pub[1],"year":pub[2]}
+			string = json.dumps(thispub)
+			fjson.write(string)
 	#break
 	except:
 		continue
 	time.sleep(10)
 	
-json.dump(related_pubs,fjson)		
 
 fjson.close()
 f.close()
