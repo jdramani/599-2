@@ -41,18 +41,12 @@ public class ParserExtraction {
 	static int fcount = 0;
 	 static String o=null;
 public static void main(final String[] args) throws IOException,SAXException, TikaException, NullPointerException {
-
-   //parse method parameters
-
 	choice(from);
-  
-  // System.out.println("File content : " + handler.toString());
-  // System.out.println("--------------------------------------------------------");
   
 	}
 public static void choice(String from)throws IOException,SAXException, TikaException, NullPointerException {
 	 final File directory = new File(from);
-
+	 //recursive parsing to get to file
 		if(directory.isDirectory()){
 	   for(File fileOrFolder : directory.listFiles()){
 	       if(fileOrFolder.isDirectory()){
@@ -66,10 +60,8 @@ public static void choice(String from)throws IOException,SAXException, TikaExcep
 	    			   if(!type.contains("image") || type.contains("video")){
 	    				   fcount++;
 	    		    	   FileInputStream inputstream=new FileInputStream(fileOrFolder);
-	    		    	   // FileReader fr = new FileReader(file);
 	    		    	    ParseContext context = new ParseContext();
 	    		    	    Parser parser = new AutoDetectParser();
-	    		    	    //ContentHandler handler = new ToXMLContentHandler();
 	    		    	   BodyContentHandler handler = new BodyContentHandler();
 	    		    	    Metadata metadata = new Metadata();
 	    		    	    //parsing the file
@@ -85,16 +77,14 @@ public static void choice(String from)throws IOException,SAXException, TikaExcep
 	   }
 	   }
 	    }
-		System.out.println(o+" "+ fcount);
 }
-
+//implement tag ratios
 public static  void tagRatio() throws FileNotFoundException, IOException,NullPointerException{
 	  BufferedReader br= new BufferedReader(new FileReader("temp"));
 	   long x,y;
 	   String line=null;
 	   while(null!=(line=br.readLine())){
 		   x=0;y=0;
-		   //System.out.println(line);
 		   try{
 		   Pattern p = Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>");
 	       Matcher m = p.matcher(line);
@@ -117,10 +107,12 @@ public static  void tagRatio() throws FileNotFoundException, IOException,NullPoi
 	   }
 	   br.close();
 }
+
+//use OpenNLP NER
 public static void ner(String from) throws FileNotFoundException,StackOverflowError{
 	
 	InputStream modelIn = new FileInputStream("D:\\Big data\\en-token.bin");
-	//InputStream namedModel = new FileInputStream("D:\\Big data\\en-ner-person.bin");
+	InputStream namedModel = new FileInputStream("D:\\Big data\\en-ner-unit.bin");
 	BufferedReader br= new BufferedReader(new FileReader("temp"));
 	   try {
 		   TokenizerModel model = new TokenizerModel(modelIn);
@@ -128,7 +120,6 @@ public static void ner(String from) throws FileNotFoundException,StackOverflowEr
 		   String elements[]={"km","m","kg","g","mg","lbs","tonne","tons","cm","ft","yard","hours","minutes","mi","oz","gal","K","C",
 				   "examples","followers","meters","kilometers","meters","inch","feet","miles","ounce","gallon","pound","dollar",
 				   "kilogram","kilos","weeks","days","degree","degrees"};
-		     //System.out.println(from);
 		   for(int i=0;i<ttr.size();i++){
 			   String line = null;
 			   if(null!=(line = br.readLine())){
@@ -158,7 +149,6 @@ public static void ner(String from) throws FileNotFoundException,StackOverflowEr
 		   extract = new PrintWriter(new BufferedWriter(new FileWriter(output,true)));
 		   for(int i=0;i<measure.size();i++){
 			   extract.println(o.substring(o.lastIndexOf("\\")+1)+","+measure.get(i));
-			   //System.out.println(measure.get(i));
 		   }
 		   measure.clear();
 		   ttr.clear();
@@ -180,7 +170,7 @@ public static void ner(String from) throws FileNotFoundException,StackOverflowEr
 	   }
 
 }
-
+//temporarily stores extracted text on file
 public static void storeObject(String temp){
 	
 	OutputStream ops = null;
