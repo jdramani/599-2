@@ -39,7 +39,7 @@ for line in f:
 	except:
 		continue
 	time.sleep(10)
-	break	
+	
 json.dump(related_pubs,fjson)		
 
 fjson.close()
