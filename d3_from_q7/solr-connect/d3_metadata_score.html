@@ -28,6 +28,7 @@
 </style>
 	</head>
 	<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 	window.onload = function () {
@@ -65,11 +66,48 @@ d3.select('.tooltip').style('padding',' 10px')
 .style('background',' white')
 .style('border-radius',' 10px')
 .style('box-shadow',' 4px 4px 10px rgba(0, 0, 0, 0.4)');
-d3.csv("/hw2/metadata1.csv",  function(data) {
+
+function ConvertToCSV(objArray) {
+  var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+  var str = '';
+
+  for (var i = 0; i < array.length; i++) {
+      var line = '';
+      for (var index in array[i]) {
+          if (line != '') line += ','
+
+          line += array[i][index];
+      }
+
+      str += line + '\r\n';
+  }
+
+  return str;
+}
+
+(function () {
+    var json = null;
+    $.ajax({
+      'async': false,
+      'global': false,
+      'url': 'http://localhost:8983/solr/polar_score/select',
+      'data': {'wt':'json', 'q':'*:*', 'rows': 100},
+      'success': function(data) { 
+          drawD3(data.response.docs);
+      },
+      'dataType': 'jsonp',
+      'jsonp': 'json.wrf'
+    });
+})(); 
+
+
+drawD3 = function(data) {
 
 console.log("in");
   x.domain(data.map(function(d) { d = ++count; return d;}));
-  y.domain([0, d3.max(data, function(d) { return d.score; })]);
+  y.domain([0, d3.max(data, function(d) { 
+    return d.Score[0]; 
+  })]);
 console.log(d3.max(d3.values(data)));
   svg.append("g")
       .attr("class", "x axis")
@@ -92,14 +130,14 @@ count=0;
       .attr("class", "bar")
       .attr("x", function(d) { d=++count;return x(d); })
       .attr("width", 5.5)
-      .attr("y", function(d) { return y(d.score); })
-      .attr("height", function(d) { return height - y(d.score); })
+      .attr("y", function(d) { return y(d.Score[0]); })
+      .attr("height", function(d) { return height - y(d.Score[0]); })
       .on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9)
                . style('position','absolute');
-          tooltip.html("(Filename: " + d.filename+"<br> Metadata Score: "+d.score+")")
+          tooltip.html("(Filename: " + d.Name+"<br> Metadata Score: "+d.Score+")")
                .style("left", (d3.event.pageX + 5) + "px")
                .style("top", (d3.event.pageY - 55) + "px");
       })
@@ -107,10 +145,10 @@ count=0;
           tooltip.transition()
                .duration(500)
                .style("opacity", 0)});
-});
+};
 	}
 function type(d) {
-  d.score = +d.score;
+  d.Score = +d.Score;
   return d;
 }/*
     var QueryString = function () {
