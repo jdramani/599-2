@@ -1,0 +1,29 @@
+Question 7:
+- Extract SWEET ontology into a folder named ontology
+- Run SweetConceptExtractor.java to extract the concepts and categories from the ontology files
+- Run tika-server with instructions from https://wiki.apache.org/tika/TikaJAXRS.
+- Run tika-ner bash script to extract named entity from the data (modify path to data in the script).
+- Run extract_sweet_concepts.py to get the intersection betweens these two sets of data.
+
+Question 8:
+- Modify path to data in metascorer.py script.
+- Run metascorer.py script.
+
+Question 9:
+- Locate solr root folder.
+- Run bin/solr create -c core_name to create a new index core
+- Run bin/solr -c core_name path_to_data_file (data files can be either csv or json files)
+- Index csv and json result files from different questions to Solr
+	+ For measurement data, use polar as core name
+	+ For location data, use polar_geo as core name
+	+ For scholar data, use polar_scholar as core name
+	+ For sweet data, use polar_sweet as core name
+	+ For metadata score, use polar_score as core name
+	+ For extra_credit part, use polar_extra as core name
+	+ For storing tika-similarity clusters structure, use polar_similarity as core name
+
+Question 11:
+- Install tika-similarity as instructed from https://github.com/chrismattmann/tika-similarity/.
+- Replace the python files in tika-similarity with our python files.
+- Run clustering_script.py to generate the d3 files.
+- Run indexer.py to flatten nested structures in d3 json files and index it into solr
